@@ -1,0 +1,28 @@
+//$ ./scribblec samples/Foo.scr -project samples.Foo.MyProtocol B -o output
+
+module samples.Foo;
+
+
+type <py> "IntType" from "Types.py" as int;
+type <py> "StringType" from "Types.py" as string;
+
+
+global protocol Bar(role A, role B, role C) {
+	m1() from A to B;
+	m2() from B to C;
+	m3() from C to A;
+}
+
+
+global protocol MyProtocol(role A, role B, role C) {
+	m1(int) from A to B;
+	rec X {
+		choice at B {
+			m2(string) from B to C;
+			continue X;
+		} or {
+			m3() from B to C;
+		}
+	}
+}
+

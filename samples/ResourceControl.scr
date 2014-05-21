@@ -1,0 +1,44 @@
+/**
+ * https://confluence.oceanobservatories.org/display/CIDev/Resource+Control+in+Scribble
+ * $ ./scribblec samples/ResourceControl.scr -project samples.ResourceControl.ResourceControl User -o output
+ */
+
+module samples.ResourceControl;
+
+
+type <py> "types.IntType" from "types.py" as int;
+
+
+global protocol ResourceControl(role User as U,
+                   role Controller as C,
+                   role Agent as A)
+{
+	req(int) from U to C;
+	start() from C to A;
+	interruptible
+	{
+		rec X
+		{
+			interruptible
+			{
+				rec Y
+				{
+					data() from A to U;
+					continue Y;
+				}
+			}
+			with
+			{
+				pause() by U;
+			}
+			resume() from U to A;
+			continue X;
+		}
+	}
+	with
+	{
+		stop() by U;
+		timeout() by C;
+	}
+}
+

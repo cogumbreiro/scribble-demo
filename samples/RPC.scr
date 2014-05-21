@@ -1,0 +1,14 @@
+/*
+ * $ ./scribblec samples/RPC.scr -project samples.RPC.RPC requester -o output
+ */
+
+module samples.RPC;
+
+global protocol RPC(role requester, role provider)
+{
+   request() from requester to provider;
+   choice at provider {
+       accept() from provider to requester;
+   } or {
+       reject() from provider to requester;}
+}

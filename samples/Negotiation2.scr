@@ -1,0 +1,30 @@
+/**
+ * https://confluence.oceanobservatories.org/display/CIDev/Scribble+for+Negotiation+Protocol
+ *
+ *$ ./scribblec samples/Negotiation2.scr -project samples.Negotiation2.Negotiate Consumer -o output
+ */
+
+module samples.Negotiation2;
+
+
+type <yml> "SAPDoc1" from "SAPDoc1.yml" as SAP;
+
+
+global protocol Negotiate(role Consumer, role Producer) {
+	propose(SAP) from Consumer to Producer;
+	do NegotiateAux(Consumer as Proposer, Producer as CounterParty);
+}
+
+global protocol NegotiateAux(
+		role Proposer as A, role CounterParty as B) {
+	choice at B {
+		accept() from B to A;
+		confirm() from A to B;
+	} or {
+		reject() from B to A;
+	} or {
+		propose(SAP) from B to A;
+		do NegotiateAux(B as Proposer, A as CounterParty);
+	}
+}
+
